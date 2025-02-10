@@ -9,7 +9,7 @@ using Microsoft.Extensions.Logging;
 
 namespace CnpjMailingApi.Controllers
 {
-    [Route("[controller]")]
+    [Route("/api/[controller]")]
     public class CnpjMailingController : Controller
     {
         private readonly CnpjMailingService _service;
