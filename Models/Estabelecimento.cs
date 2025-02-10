@@ -14,6 +14,7 @@ namespace CnpjMailingApi.Models
         public string? SituacaoCadastral { get; set; }
         public string? CnaePrincipal { get; set; }
         public string? Bairro { get; set; }
+        public string? Uf { get; set; }
         public string? Municipio { get; set; }
     }
 }
