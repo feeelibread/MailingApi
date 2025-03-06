@@ -7,8 +7,10 @@ namespace CnpjMailingApi
 {
     public class CnpjFilterDto
     {
-        public required string Ufs { get; set; }
-        public required string Cnaes { get; set; }
+        public string? Ufs { get; set; }
+        public required string CnaesPrimarios { get; set; }
+        public string? CnaeSecundario { get; set; }
+        public string? Identificador { get; set; }
         public string? Bairros { get; set; }
         public string? Municipios { get; set; }
         public string? OpcaoMei { get; set; }

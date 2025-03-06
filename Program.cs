@@ -20,7 +20,7 @@ builder.Services.AddSwaggerGen(c =>
     {
         Title = "CNPJ Search API",
         Version = "v1",
-        Description = "Api para consultar CNPJs com base em filtros como cidades, CNAEs, município, etc."
+        Description = "Api para retornar CNPJs com base em filtros como cidades, CNAEs, município, etc."
     });
 });
 

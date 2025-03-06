@@ -17,7 +17,7 @@ namespace CnpjMailingApi.Repos
             _dbConnectionFactory = dbConnectionFactory;
         }
 
-        public async Task<IEnumerable<string>> GetCnpjsByFilter(List<string> cnaes, List<string> cidades, List<string> municipios, string opcaoMei, List<string> bairro)
+        public async Task<IEnumerable<string>> GetCnpjsByFilter(List<string> cnaesPrimarios, string? cnaeSecundario, string? identificador, List<string> cidades, List<string> municipios, string? opcaoMei, List<string> bairro)
         {
             StringBuilder queryBuilder = new StringBuilder();
             queryBuilder.AppendLine(@"SELECT CONCAT(e.CNPJ_BASICO, e.CNPJ_ORDEM, e.CNPJ_DV) AS CNPJ FROM ESTABELECIMENTO e
@@ -30,9 +30,19 @@ JOIN MUNICIPIOS m ON e.MUNICIPIO = m.CODIGO");
 
             queryBuilder.AppendLine("WHERE e.SITUACAO_CADASTRAL = '02'");
 
-            if (cnaes != null && cnaes.Any())
+            if (!string.IsNullOrEmpty(identificador))
             {
-                queryBuilder.AppendLine("AND e.CNAE_PRINCIPAL IN (" + string.Join(",", cnaes.Select(c => $"'{c}'")) + ")");
+                queryBuilder.AppendLine("AND e.IDENTIFICADOR = @Identificador");
+            }
+
+            if (cnaesPrimarios != null && cnaesPrimarios.Any())
+            {
+                queryBuilder.AppendLine("AND e.CNAE_PRINCIPAL IN (" + string.Join(",", cnaesPrimarios.Select(c => $"'{c}'")) + ")");
+            }
+
+            if (!string.IsNullOrEmpty(cnaeSecundario))
+            {
+                queryBuilder.AppendLine($"AND e.CNAE_SECUNDARIO LIKE @CnaeSecundario");
             }
 
             if (cidades != null && cidades.Any())
@@ -62,8 +72,16 @@ JOIN MUNICIPIOS m ON e.MUNICIPIO = m.CODIGO");
             await connection.OpenAsync();
 
             using var command = new NpgsqlCommand(query, connection);
+
             if (!string.IsNullOrEmpty(opcaoMei))
                 command.Parameters.AddWithValue("@OpcaoMei", opcaoMei);
+
+            if (!string.IsNullOrEmpty(cnaeSecundario))
+                command.Parameters.AddWithValue("@CnaeSecundario", $"%{cnaeSecundario}%");
+
+            if (!string.IsNullOrEmpty(identificador))
+                command.Parameters.AddWithValue("@Identificador", identificador);
+
 
             var cnpjs = new List<string>();
             using var reader = await command.ExecuteReaderAsync();
