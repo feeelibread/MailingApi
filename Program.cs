@@ -25,6 +25,8 @@ builder.Services.AddSwaggerGen(c =>
 });
 
 builder.Services.AddScoped<ICnpjMailingRepository, CnpjMailingRepository>();
+builder.Services.AddScoped<ICnpjDataRepository, CnpjDataRepository>();
+builder.Services.AddScoped<CnpjDataService>();
 builder.Services.AddScoped<CnpjMailingService>();
 
 

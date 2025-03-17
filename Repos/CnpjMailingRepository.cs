@@ -1,8 +1,4 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 using CnpjMailingApi.Data;
 using Npgsql;
 
@@ -37,7 +33,7 @@ JOIN MUNICIPIOS m ON e.MUNICIPIO = m.CODIGO");
 
             if (cnaesPrimarios != null && cnaesPrimarios.Any())
             {
-                queryBuilder.AppendLine("AND e.CNAE_PRINCIPAL IN (" + string.Join(",", cnaesPrimarios.Select(c => $"'{c}'")) + ")");
+                queryBuilder.AppendLine("AND e.CNAE_PRINCIPAL IN (" + string.Join(",", cnaesPrimarios.Select(c => $"'{c.Replace(".", "").Replace("-", "")}'")) + ")");
             }
 
             if (!string.IsNullOrEmpty(cnaeSecundario))
@@ -47,7 +43,7 @@ JOIN MUNICIPIOS m ON e.MUNICIPIO = m.CODIGO");
 
             if (cidades != null && cidades.Any())
             {
-                queryBuilder.AppendLine("AND e.UF IN (" + string.Join(",", cidades.Select(ci => $"'{ci}'")) + ")");
+                queryBuilder.AppendLine("AND e.UF IN (" + string.Join(",", cidades.Select(ci => $"'{ci.ToUpper()}'")) + ")");
             }
 
             if (municipios != null && municipios.Any())
@@ -65,6 +61,7 @@ JOIN MUNICIPIOS m ON e.MUNICIPIO = m.CODIGO");
                 queryBuilder.AppendLine("AND s.OPCAO_MEI = @OpcaoMei");
             }
 
+
             var query = queryBuilder.ToString();
             System.Console.WriteLine(query);
 
@@ -77,7 +74,7 @@ JOIN MUNICIPIOS m ON e.MUNICIPIO = m.CODIGO");
                 command.Parameters.AddWithValue("@OpcaoMei", opcaoMei);
 
             if (!string.IsNullOrEmpty(cnaeSecundario))
-                command.Parameters.AddWithValue("@CnaeSecundario", $"%{cnaeSecundario}%");
+                command.Parameters.AddWithValue("@CnaeSecundario", $"%{cnaeSecundario.Replace(".", "").Replace("-", "")}%");
 
             if (!string.IsNullOrEmpty(identificador))
                 command.Parameters.AddWithValue("@Identificador", identificador);

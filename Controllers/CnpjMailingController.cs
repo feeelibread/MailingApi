@@ -22,6 +22,7 @@ namespace CnpjMailingApi.Controllers
         [HttpGet]
         public async Task<IActionResult> Get([FromQuery] CnpjFilterDto filter)
         {
+
             List<string> cnaesPrimarios = filter.CnaesPrimarios.Split(',').ToList() ?? new List<string>();
             List<string> uf = filter.Ufs?.Split(',').ToList() ?? new List<string>();
             List<string> bairros = filter.Bairros?.Split(',').ToList() ?? new List<string>();
