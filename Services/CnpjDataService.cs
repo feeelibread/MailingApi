@@ -11,7 +11,7 @@ namespace CnpjMailingApi.Services
             _repos = repos;
         }
 
-        public async Task<IEnumerable<CnpjDataDto>> GetDataByCnpj(string cnpj)
+        public async Task<CnpjDataDto> GetDataByCnpj(string cnpj)
         {
             return await _repos.GetDataByCnpj(cnpj);
         }

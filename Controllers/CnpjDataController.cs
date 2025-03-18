@@ -25,15 +25,16 @@ namespace CnpjMailingApi.Controllers
         {
             var result = await _service.GetDataByCnpj(cnpj);
 
-            if (!string.IsNullOrEmpty(cnpj))
+            if (string.IsNullOrEmpty(cnpj))
             {
                 return BadRequest("O campo não pode estar vazio");
             }
-
+            
             if (cnpj.Length < 14)
             {
                 return BadRequest("O CNPJ precisa ter 14 digitos.");
             }
+            
 
             if (result == null)
             {

@@ -4,6 +4,6 @@ namespace CnpjMailingApi.Repos
 {
     public interface ICnpjDataRepository
     {
-        Task<IEnumerable<CnpjDataDto>> GetDataByCnpj(string cnpj);
+        Task<CnpjDataDto> GetDataByCnpj(string cnpj);
     }
 }

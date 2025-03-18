@@ -13,6 +13,7 @@ namespace CnpjMailingApi.DTOs
         public string? RazaoSocial { get; set; }
         public string? NomeFantasia { get; set; }
         public string? Qualificacao { get; set; }
+        public string? Natureza { get; set; }
         public string? CapitalSocial { get; set; }
         public string? PorteEmpresa { get; set; }
         public string? Identificador { get; set; }

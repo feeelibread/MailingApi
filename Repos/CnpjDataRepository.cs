@@ -7,7 +7,6 @@ using NpgsqlTypes;
 
 namespace CnpjMailingApi.Repos
 {
-    //TODO: Tratar erro com CNPJ que não está sendo atribuído ao @NumeroCnpj
     public class CnpjDataRepository : ICnpjDataRepository
     {
         private readonly DbConnectionFactory _dbConnectionFactory;
@@ -16,11 +15,11 @@ namespace CnpjMailingApi.Repos
             _dbConnectionFactory = dbConnectionFactory;
         }
 
-        public async Task<IEnumerable<CnpjDataDto>> GetDataByCnpj(string cnpj)
+        public async Task<CnpjDataDto> GetDataByCnpj(string cnpj)
         {
             StringBuilder queryBuilder = new StringBuilder();
-
-            queryBuilder.AppendLine(@"SELECT CONCAT(e.cnpj_basico, e.cnpj_ordem, e.cnpj_dv) AS CNPJ,
+            
+            queryBuilder.AppendLine(@$"SELECT CONCAT(e.cnpj_basico, e.cnpj_ordem, e.cnpj_dv) AS CNPJ,
 	emp.RAZAO_SOCIAL,
 	e.nome_fantasia,
 	emp.qualificacao,
@@ -46,7 +45,7 @@ namespace CnpjMailingApi.Repos
 	e.numero_2,
 	e.email
 	FROM ESTABELECIMENTO e JOIN EMPRESAS emp ON e.CNPJ_BASICO = emp.CNPJ_BASICO
-    WHERE CONCAT(e.cnpj_basico, e.cnpj_ordem, e.cnpj_dv) = @NumeroCnpj");
+    WHERE CONCAT(e.cnpj_basico, e.cnpj_ordem, e.cnpj_dv) = '{cnpj.Replace(".", "").Replace("/", "").Replace("-", "").Replace("%2F", "")}'");
 
             var query = queryBuilder.ToString();
 
@@ -55,53 +54,43 @@ namespace CnpjMailingApi.Repos
 
             using var command = new NpgsqlCommand(query, connection);
 
-            if (!string.IsNullOrEmpty(cnpj))
-            {
-                command.Parameters.Add(new NpgsqlParameter("@NumeroCnpj", NpgsqlDbType.Varchar)
-                {
-                    Value = cnpj.Replace(".", "").Replace("/", "").Replace("-", "").Replace("%2F", "")
-                });
-            }
             Console.WriteLine($"cnpj enviado: {cnpj}");
             Console.WriteLine(query);
 
             command.CommandTimeout = 180;
 
-
             using var reader = await command.ExecuteReaderAsync();
 
             if (await reader.ReadAsync())
             {
-                return new List<CnpjDataDto>()
+                return new CnpjDataDto
                 {
-                    new CnpjDataDto()
-                    {
-                        Cnpj = reader.GetString(0),
-                        RazaoSocial = reader.IsDBNull(1) ? string.Empty : reader.GetString(1),
-                        NomeFantasia = reader.IsDBNull(2) ? string.Empty : reader.GetString(2),
-                        Qualificacao = reader.IsDBNull(3) ? string.Empty : reader.GetString(3),
-                        CapitalSocial = reader.IsDBNull(4) ? string.Empty : reader.GetString(4),
-                        PorteEmpresa = reader.IsDBNull(5) ? string.Empty : reader.GetString(5),
-                        Identificador = reader.IsDBNull(6) ? string.Empty : reader.GetString(6),
-                        SituacaoCadastral = reader.IsDBNull(7) ? string.Empty : reader.GetString(7),
-                        Motivo = reader.IsDBNull(8) ? string.Empty : reader.GetString(8),
-                        CnaePrincipal = reader.IsDBNull(9) ? string.Empty : reader.GetString(9),
-                        CnaeSecundario = reader.IsDBNull(10) ? string.Empty : reader.GetString(10),
-                        TipoLogradouro = reader.IsDBNull(11) ? string.Empty : reader.GetString(11),
-                        Logradouro = reader.IsDBNull(12) ? string.Empty : reader.GetString(12),
-                        Numero = reader.IsDBNull(13) ? string.Empty : reader.GetString(13),
-                        Complemento = reader.IsDBNull(14) ? string.Empty : reader.GetString(14),
-                        Bairro = reader.IsDBNull(15) ? string.Empty : reader.GetString(15),
-                        Cep = reader.IsDBNull(16) ? string.Empty : reader.GetString(16),
-                        Uf = reader.IsDBNull(17) ? string.Empty : reader.GetString(17),
-                        Municipio = reader.IsDBNull(18) ? string.Empty : reader.GetString(18),
-                        Ddd1 = reader.IsDBNull(19) ? string.Empty : reader.GetString(19),
-                        Tel1 = reader.IsDBNull(20) ? string.Empty : reader.GetString(20),
-                        Ddd2 = reader.IsDBNull(21) ? string.Empty : reader.GetString(21),
-                        Tel2 = reader.IsDBNull(22) ? string.Empty : reader.GetString(22),
-                        Email = reader.IsDBNull(23) ? string.Empty : reader.GetString(23)
-                    }
-            };
+                    Cnpj = reader.GetString(0),
+                    RazaoSocial = reader.IsDBNull(1) ? string.Empty : reader.GetString(1),
+                    NomeFantasia = reader.IsDBNull(2) ? string.Empty : reader.GetString(2),
+                    Qualificacao = reader.IsDBNull(3) ? string.Empty : reader.GetString(3),
+                    Natureza = reader.IsDBNull(4) ? string.Empty : reader.GetString(4),
+                    CapitalSocial = reader.IsDBNull(4) ? string.Empty : reader.GetString(5),
+                    PorteEmpresa = reader.IsDBNull(5) ? string.Empty : reader.GetString(6),
+                    Identificador = reader.IsDBNull(6) ? string.Empty : reader.GetString(7),
+                    SituacaoCadastral = reader.IsDBNull(7) ? string.Empty : reader.GetString(8),
+                    Motivo = reader.IsDBNull(8) ? string.Empty : reader.GetString(9),
+                    CnaePrincipal = reader.IsDBNull(9) ? string.Empty : reader.GetString(10),
+                    CnaeSecundario = reader.IsDBNull(10) ? string.Empty : reader.GetString(11),
+                    TipoLogradouro = reader.IsDBNull(11) ? string.Empty : reader.GetString(12),
+                    Logradouro = reader.IsDBNull(12) ? string.Empty : reader.GetString(13),
+                    Numero = reader.IsDBNull(13) ? string.Empty : reader.GetString(14),
+                    Complemento = reader.IsDBNull(14) ? string.Empty : reader.GetString(15),
+                    Bairro = reader.IsDBNull(15) ? string.Empty : reader.GetString(16),
+                    Cep = reader.IsDBNull(16) ? string.Empty : reader.GetString(17),
+                    Uf = reader.IsDBNull(17) ? string.Empty : reader.GetString(18),
+                    Municipio = reader.IsDBNull(18) ? string.Empty : reader.GetString(19),
+                    Ddd1 = reader.IsDBNull(19) ? string.Empty : reader.GetString(20),
+                    Tel1 = reader.IsDBNull(20) ? string.Empty : reader.GetString(21),
+                    Ddd2 = reader.IsDBNull(21) ? string.Empty : reader.GetString(22),
+                    Tel2 = reader.IsDBNull(22) ? string.Empty : reader.GetString(23),
+                    Email = reader.IsDBNull(23) ? string.Empty : reader.GetString(24)
+                };
             }
             else
             {
