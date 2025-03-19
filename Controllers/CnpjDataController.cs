@@ -21,8 +21,10 @@ namespace CnpjMailingApi.Controllers
             _service = service;
         }
 
+        //TODO: Melhorar a validação do CNPJ
+
         [HttpGet]
-        public async Task<IActionResult> Get([Required]string cnpj)
+        public async Task<IActionResult> Get([Required] string cnpj)
         {
             var result = await _service.GetDataByCnpj(cnpj);
 
@@ -30,12 +32,12 @@ namespace CnpjMailingApi.Controllers
             {
                 return BadRequest("O campo não pode estar vazio");
             }
-            
+
             if (cnpj.Length < 14)
             {
                 return BadRequest("O CNPJ precisa ter 14 digitos.");
             }
-            
+
 
             if (result == null)
             {

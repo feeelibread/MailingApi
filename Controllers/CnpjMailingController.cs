@@ -19,6 +19,8 @@ namespace CnpjMailingApi.Controllers
             _service = service;
         }
 
+        //TODO: Validar os campos de filtro para verificar se estão no formato correto.
+
         [HttpGet]
         public async Task<IActionResult> Get([FromQuery] CnpjFilterDto filter)
         {
