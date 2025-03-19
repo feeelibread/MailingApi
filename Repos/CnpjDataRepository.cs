@@ -18,7 +18,7 @@ namespace CnpjMailingApi.Repos
         public async Task<CnpjDataDto> GetDataByCnpj(string cnpj)
         {
             StringBuilder queryBuilder = new StringBuilder();
-            
+
             queryBuilder.AppendLine(@$"SELECT CONCAT(e.cnpj_basico, e.cnpj_ordem, e.cnpj_dv) AS CNPJ,
 	emp.RAZAO_SOCIAL,
 	e.nome_fantasia,
@@ -94,7 +94,7 @@ namespace CnpjMailingApi.Repos
             }
             else
             {
-                return null;
+                throw new Exception();
             }
 
         }
