@@ -28,7 +28,7 @@ JOIN MUNICIPIOS m ON e.MUNICIPIO = m.CODIGO");
 
             if (!string.IsNullOrEmpty(identificador))
             {
-                queryBuilder.AppendLine("AND e.IDENTIFICADOR = @Identificador");
+                queryBuilder.AppendLine("AND e.IDENTIFICADOR = @identificador");
             }
 
             if (cnaesPrimarios != null && cnaesPrimarios.Any())
@@ -77,7 +77,7 @@ JOIN MUNICIPIOS m ON e.MUNICIPIO = m.CODIGO");
                 command.Parameters.AddWithValue("@CnaeSecundario", $"%{cnaeSecundario.Replace(".", "").Replace("-", "")}%");
 
             if (!string.IsNullOrEmpty(identificador))
-                command.Parameters.AddWithValue("@Identificador", identificador);
+                command.Parameters.AddWithValue("@identificador", identificador);
 
 
             var cnpjs = new List<string>();

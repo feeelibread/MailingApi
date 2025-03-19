@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
@@ -20,8 +21,8 @@ namespace CnpjMailingApi.Controllers
             _service = service;
         }
 
-        [HttpGet("{cnpj}")]
-        public async Task<IActionResult> Get(string cnpj)
+        [HttpGet]
+        public async Task<IActionResult> Get([Required]string cnpj)
         {
             var result = await _service.GetDataByCnpj(cnpj);
 
