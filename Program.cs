@@ -10,7 +10,7 @@ var builder = WebApplication.CreateBuilder(args);
 var connectionString = builder.Configuration.GetConnectionString("Default");
 
 // Registra o DbConnectionFactory com a string de conexão
-builder.Services.AddSingleton<DbConnectionFactory>(new DbConnectionFactory(connectionString));
+builder.Services.AddSingleton<DbConnectionFactory>(new DbConnectionFactory(connectionString!));
 
 builder.Services.AddControllers();
 // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
